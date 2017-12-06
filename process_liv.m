@@ -81,31 +81,31 @@ if(nfiles <= 1)
 end
 
 %% Generate figures and set axis labels
-figure('Name', 'I-V plot');
+fig_iv = figure('Name', 'I-V plot');
 hold on;
 ax_iv = gca;
 ax_iv.XLabel.String = 'Current (A)';
 ax_iv.YLabel.String = 'Voltage (V)';
 
-figure('Name', 'L-I plot');
+fig_li = figure('Name', 'L-I plot');
 hold on;
 ax_li = gca;
 ax_li.XLabel.String = 'Current (A)';
 ax_li.YLabel.String = 'THz power (mW)';
 
-figure('Name', 'Efficiency plot');
+fig_eff = figure('Name', 'Efficiency plot');
 hold on;
 ax_eff = gca;
 ax_eff.XLabel.String = 'Current (A)';
 ax_eff.YLabel.String = 'Efficiency (\%)';
 
-figure('Name', 'Power-temperature plot');
+fig_T_Ppk = figure('Name', 'Power-temperature plot');
 hold on;
 ax_T_Ppk = gca;
 ax_T_Ppk.XLabel.String = 'Heat-sink temperature (K)';
 ax_T_Ppk.YLabel.String = 'Peak THz power (mW)';
 
-figure('Name', 'Threshold current vs temperature');
+fig_T_Ith = figure('Name', 'Threshold current vs temperature');
 hold on;
 ax_T_Ith = gca;
 ax_T_Ith.XLabel.String = 'Heat-sink temperature (K)';
@@ -181,3 +181,21 @@ I0_fitted = T_I_fit(temperature');
 plot(ax_T_Ith, temperature', I0_fitted, 'k-');
 plot(ax_T_Ith, temperature', threshold_current', 'ko');
 
+%% Print plots to file, in various formats
+print(fig_iv,    'I-V',        '-dpdf', '-r600');
+print(fig_li,    'L-I',        '-dpdf', '-r600');
+print(fig_eff,   'efficiency', '-dpdf', '-r600');
+print(fig_T_Ppk, 'Ppk-T',      '-dpdf', '-r600');
+print(fig_T_Ith, 'Ith-T',      '-dpdf', '-r600');
+
+print(fig_iv,    'I-V',        '-dpng', '-r600');
+print(fig_li,    'L-I',        '-dpng', '-r600');
+print(fig_eff,   'efficiency', '-dpng', '-r600');
+print(fig_T_Ppk, 'Ppk-T',      '-dpng', '-r600');
+print(fig_T_Ith, 'Ith-T',      '-dpng', '-r600');
+
+print(fig_iv,    'I-V',        '-deps', '-r600');
+print(fig_li,    'L-I',        '-deps', '-r600');
+print(fig_eff,   'efficiency', '-deps', '-r600');
+print(fig_T_Ppk, 'Ppk-T',      '-deps', '-r600');
+print(fig_T_Ith, 'Ith-T',      '-deps', '-r600');
