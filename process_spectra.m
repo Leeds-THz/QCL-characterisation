@@ -48,24 +48,14 @@ controlvar = zeros(1,nfiles);
 for ifile = 1:nfiles
     %% Read data from input file
     filename = allfiles(ifile,:);
-    filedata = load(filename);
-
-    wavenumber = filedata(:,1); % [1/cm]
-    intensity  = filedata(:,2); % [a.u.]
-
+    [frequency, intensity] = read_dpt(filename);
+    
     %% Find the current or temperature from the filename
     % Strip prefix and suffix off the filename
     endpart   = strsplit(filename, fileprefix);
     frontpart = strsplit(endpart{2}, filesuffix);
 
     controlvar(ifile) = str2double(frontpart{1});
-
-    % Convert wavenumber to frequency
-    frequency = wavenumber * physconst('LightSpeed') / 1e10; % [THz]
-
-    % Reverse data direction as Bruker system saves from high-to-low freq
-    frequency = fliplr(frequency);
-    intensity = fliplr(intensity);
 
     % Find range of frequencies within the specified range
     indices = frequency > fmin & frequency < fmax;
