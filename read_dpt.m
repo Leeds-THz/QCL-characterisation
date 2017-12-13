@@ -1,4 +1,4 @@
-function [frequency, intensity] = read_dpt(filename)
+function [frequency, intensity] = read_dpt(filename, varargin)
 % READ_DPT  Read THz spectral data from a Bruker DPT file
 %
 %    [frequency, intensity] = READ_DPT(filename)
@@ -19,6 +19,23 @@ function [frequency, intensity] = read_dpt(filename)
 %       frequency - The frequency in THz (increasing order)
 %       intensity - The spectral intensity (a.u.) at each frequency
 
+%% Handle input arguments
+parser = inputParser;
+
+% Define REQUIRED function arguments
+addRequired(parser, 'filename', @ischar);
+
+% Define OPTIONAL function arguments 
+default_fmin = 1; % Minimum frequency to plot [THz]
+default_fmax = 5; % Maximum frequency to plot [THz]
+
+addParameter(parser, 'fmin', default_fmin, @isnumeric);
+addParameter(parser, 'fmax', default_fmax, @isnumeric);
+
+parse(parser, filename, varargin{:});
+fmin = parser.Results.fmin;
+fmax = parser.Results.fmax;
+
 %% Read raw data from file
 filedata = load(filename);
 
@@ -31,3 +48,13 @@ frequency = wavenumber * physconst('LightSpeed') / 1e10; % [THz]
 % Reverse data direction as Bruker system saves from high-to-low freq
 frequency = fliplr(frequency);
 intensity = fliplr(intensity);
+
+% Find range of frequencies within the specified range
+indices = frequency > fmin & frequency < fmax;
+
+% Truncate frequency and intensity arrays to desired range
+frequency = frequency(indices);
+intensity = intensity(indices);
+
+% Normalise intensity to 1
+intensity = intensity / max(intensity);
